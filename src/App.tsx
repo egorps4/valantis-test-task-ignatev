@@ -1,34 +1,36 @@
 import { FC, useEffect } from "react";
 import Table from "./components/Table";
 import Container from 'react-bootstrap/Container';
-import ProductService from "./services/ProductService";
-
-const fakeData = [
-  {
-      id: 1,
-      name: 'Рубашка',
-      price: '5214',
-      brand: 'адидас',
-  },
-  {
-      id: 2,
-      name: 'Cумка',
-      price: '5324',
-      brand: 'Бренд',
-  },
-  {
-      id: 3,
-      name: 'Ботинки',
-      price: '2345',
-      brand: 'найк',
-  },
-]
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from "./store/store";
+import { getProductsAsync, getProductsIdsAsync } from "./store/productSlice";
 
 const App: FC = () => {
+  const { products, productsIds, page, limit } = useSelector((state: RootState) => state.product);
+  const dispatch = useDispatch<AppDispatch>();
+
+
+  useEffect(() => {
+    dispatch(
+      getProductsIdsAsync({
+        action: 'get_ids',
+        params: { limit, offset: page * limit }
+      })
+    );
+  }, []);
+
+  useEffect(() => {
+    dispatch(
+      getProductsAsync({
+        action: 'get_items',
+        params: { ids: productsIds }
+      })
+    );
+  }, [productsIds])
 
   return (
     <Container className="mt-5">
-      <Table data={fakeData} />
+      <Table data={products} />
     </Container>
   );
 }

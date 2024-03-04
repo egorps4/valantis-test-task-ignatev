@@ -17,9 +17,9 @@ const Table: FC<{ data: any }> = ({ data }) => {
                     return (
                         <tr key={product.id}>
                             <th scope="row">{product.id}</th>
-                            <td>{product.name}</td>
+                            <td>{product.product}</td>
                             <td>{product.price} руб.</td>
-                            <td>{product.brand}</td>
+                            <td>{product.brand || '-'}</td>
                         </tr>
                     )
                 })}
