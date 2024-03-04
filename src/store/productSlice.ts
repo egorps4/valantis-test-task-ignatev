@@ -6,7 +6,7 @@ import ProductService from "../services/ProductService";
 interface ProductsState {
     products: IProduct[];
     productsIds: string[];
-    loading: boolean;
+    isLoading: boolean;
     error: string | null;
     page: number;
     limit: number;
@@ -15,7 +15,7 @@ interface ProductsState {
 const initialState: ProductsState = {
     products: [],
     productsIds: [],
-    loading: false,
+    isLoading: false,
     error: null,
     page: 1,
     limit: 50,
@@ -57,43 +57,42 @@ const productSlice = createSlice({
     extraReducers: (builder) => {
         builder
             .addCase(getProductsIdsAsync.pending, (state) => {
-                state.loading = true;
+                state.isLoading = true;
                 state.error = null;
-                state.page++;
             })
             .addCase(getProductsIdsAsync.fulfilled, (state, action) => {
-                state.loading = false;
+                state.isLoading = false;
                 if (action.payload) {
                     state.productsIds = action.payload;
                 }
             })
             .addCase(getProductsIdsAsync.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.error.message || 'Something went wrong';
+                state.isLoading = false;
                 state.page--;
+                state.error = 'Произошла ошибка во время получения списка продуктов';
+                console.log(action.error.message);
             });
 
         builder
             .addCase(getProductsAsync.pending, (state) => {
-                state.loading = true;
+                state.isLoading = true;
                 state.error = null;
-                state.page++;
             })
             .addCase(getProductsAsync.fulfilled, (state, action) => {
-                state.loading = false;
+                state.isLoading = false;
                 if (action.payload) {
                     state.products = action.payload;
                 }
             })
             .addCase(getProductsAsync.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.error.message || 'Something went wrong';
+                state.isLoading = false;
                 state.page--;
+                state.error = 'Произошла ошибка во время получения списка продуктов';
+                console.log(action.error.message);
             });
 
     },
 });
-
 
 export const { incrementPage, decrementPage } = productSlice.actions;
 

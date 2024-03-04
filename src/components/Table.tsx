@@ -3,7 +3,7 @@ import { FC } from "react";
 const Table: FC<{ data: any }> = ({ data }) => {
 
     return (
-        <table className="table table-bordered table-hover">
+        <table className="table table-bordered table-hover table-sm">
             <thead className="table-dark">
                 <tr>
                     <th scope="col">id</th>
