@@ -2,6 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IProduct } from "../interfaces/productInterfaces";
 import { IProductFieldsReq, IProductFilterReq, IProductIdsReq, IProductItemsReq } from "../interfaces/productsReqParams";
 import ProductService from "../services/ProductService";
+import DICTIONARY from "../сommon/dictionary";
 
 interface ProductsState {
     fields: string[];
@@ -44,7 +45,7 @@ const productsFieldSlice = createSlice({
             })
             .addCase(getProductsFieldsAsync.rejected, (state, action) => {
                 state.pendingRequest--
-                state.error = 'Произошла ошибка во время получения списка тегов';
+                state.error = DICTIONARY.ERROR_FIELD;
                 console.log(action.error.message);
             });
     },

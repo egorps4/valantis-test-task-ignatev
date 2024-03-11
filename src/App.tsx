@@ -9,6 +9,7 @@ import { FilterName } from "./сommon/enum";
 import CustomPagination from "./components/Pagination";
 import { getProductsFieldsAsync } from "./store/productFieldSlice";
 import { fetchWithRetry } from "./utils/fetchWithRetry";
+import DICTIONARY from "./сommon/dictionary";
 
 const App: FC = () => {
   const {
@@ -103,7 +104,7 @@ const App: FC = () => {
         />
       )}
       <div>
-        <div>Фильтр по:</div>
+        <div>{DICTIONARY.FILTER}</div>
         {!errorFields ? (
           <Stack direction="horizontal" gap={2} className="mt-2">
             {fields.map((field: string, index: number) => (
@@ -138,7 +139,7 @@ const App: FC = () => {
               id="search"
               type="submit"
             >
-              Найти
+              {DICTIONARY.SEARCH}
             </Button>
           </InputGroup>
         </Form>

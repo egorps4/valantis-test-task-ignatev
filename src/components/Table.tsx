@@ -1,6 +1,7 @@
 import { FC } from "react";
 import { IProduct } from "../interfaces/productInterfaces";
 import { Spinner } from "react-bootstrap";
+import DICTIONARY from "../сommon/dictionary";
 
 interface ITable {
     products: IProduct[];
@@ -16,10 +17,10 @@ const Table: FC<ITable> = ({ products, pendingRequest, className }) => {
                 <table className={`table table-bordered table-hover table-sm ${className}`}>
                     <thead className="table-dark">
                         <tr>
-                            <th scope="col">id</th>
-                            <th scope="col">Название</th>
-                            <th scope="col">Цена</th>
-                            <th scope="col">Бренд</th>
+                            <th scope="col">{DICTIONARY.ID}</th>
+                            <th scope="col">{DICTIONARY.NAME}</th>
+                            <th scope="col">{DICTIONARY.PRICE}</th>
+                            <th scope="col">{DICTIONARY.BRAND}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -28,7 +29,7 @@ const Table: FC<ITable> = ({ products, pendingRequest, className }) => {
                                 <tr key={product.id}>
                                     <th scope="row">{product.id}</th>
                                     <td>{product.product}</td>
-                                    <td>{product.price} руб.</td>
+                                    <td>{product.price} {DICTIONARY.RUB}</td>
                                     <td>{product.brand || '-'}</td>
                                 </tr>
                             )
@@ -40,10 +41,10 @@ const Table: FC<ITable> = ({ products, pendingRequest, className }) => {
                     {pendingRequest ? (
                         <div>
                             <Spinner animation="border" className="mt-3" />
-                            <div>Идет загрузка, пожалуйста, подождите...</div>
+                            <div>{DICTIONARY.LOADING}</div>
                         </div>
                     ) : (
-                        <div>По вашему запросу ничего не найдено</div>
+                        <div>{DICTIONARY.NOT_FOUND}</div>
                     )}
                 </>
             )}

@@ -2,6 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { IProduct } from "../interfaces/productInterfaces";
 import { IProductFilterReq, IProductIdsReq } from "../interfaces/productsReqParams";
 import ProductService from "../services/ProductService";
+import DICTIONARY from "../сommon/dictionary";
 
 interface ProductsState {
     products: IProduct[];
@@ -87,7 +88,7 @@ const productsSlice = createSlice({
             })
             .addCase(getProductsAsync.rejected, (state, action) => {
                 state.pendingRequest = false;
-                state.error = 'Произошла ошибка во время получения списка продуктов';
+                state.error = DICTIONARY.ERROR_PRODUCTS;
                 console.log(action.error.message);
                 throw new Error(action.error.message);
             });
@@ -105,7 +106,7 @@ const productsSlice = createSlice({
             })
             .addCase(getFilteredProductsAsync.rejected, (state, action) => {
                 state.pendingRequest = false;
-                state.error = 'Произошла ошибка во время получения списка продуктов';
+                state.error = DICTIONARY.ERROR_PRODUCTS;
                 console.log(action.error.message);
                 throw new Error(action.error.message);
             });
