@@ -1,63 +1,156 @@
-import { FC, useEffect } from "react";
+import { FC, FormEvent, MouseEvent, useEffect, useState } from "react";
 import Table from "./components/Table";
 import Container from 'react-bootstrap/Container';
-import { Pagination, Spinner } from "react-bootstrap";
+import { Alert, Button, Form, InputGroup, Spinner, Stack } from "react-bootstrap";
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from "./store/store";
-import { decrementPage, getProductsAsync, getProductsIdsAsync, incrementPage } from "./store/productSlice";
+import { getProductsAsync, getFilteredProductsAsync, changePage } from "./store/productSlice";
+import { FilterName } from "./сommon/enum";
+import CustomPagination from "./components/Pagination";
+import { getProductsFieldsAsync } from "./store/productFieldSlice";
+import { fetchWithRetry } from "./utils/fetchWithRetry";
 
 const App: FC = () => {
-  const { products, productsIds, page, limit, isLoading, error } = useSelector((state: RootState) => state.product);
-  const dispatch = useDispatch<AppDispatch>();
+  const {
+    products,
+    page,
+    limit,
+    pendingRequest,
+    error
+  } = useSelector((state: RootState) => state.products);
 
+  const {
+    fields,
+    pendingRequest: pendingRequestFields,
+    error: errorFields,
+  } = useSelector((state: RootState) => state.productsFields);
+
+  const [filterValue, setFilterValue] = useState<string | null>(null);
+  const [searchValue, setSearchValue] = useState<string>('');
+  const [isFiltered, setIsFiltered] = useState<boolean>(false);
+
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     dispatch(
-      getProductsIdsAsync({
-        action: 'get_ids',
-        params: { limit, offset: page * limit }
+      getProductsFieldsAsync({
+        action: 'get_fields',
       })
     );
-  }, [page]);
+  }, [])
 
   useEffect(() => {
-    if (productsIds.length > 0) {
+    fetchWithRetry(dispatch, getProductsAsync, {
+      action: 'get_ids',
+      params: { limit, offset: page * limit }
+    })
+  }, [page]);
+
+
+  const handleFilterClick = (event: MouseEvent<HTMLButtonElement>) => {
+    const target = event.currentTarget;
+
+    if (target.value === filterValue) {
+      setFilterValue(null);
+
+      if (isFiltered) {
+        dispatch(
+          getProductsAsync({
+            action: 'get_ids',
+            params: { limit, offset: 1 * limit }
+          })
+        );
+
+        setIsFiltered(false);
+        setSearchValue('')
+      }
+      return
+    }
+
+    setFilterValue(target.value);
+  }
+
+  const handleSearchSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (filterValue && searchValue) {
       dispatch(
-        getProductsAsync({
-          action: 'get_items',
-          params: { ids: productsIds }
+        getFilteredProductsAsync({
+          action: 'filter',
+          params: {
+            [filterValue]: filterValue === 'price' ? Number(searchValue) : searchValue,
+          }
         })
       );
+
+      dispatch(changePage(1));
+      setIsFiltered(true);
     }
-  }, [productsIds])
-
-  const nextPage = () => {
-    dispatch(incrementPage());
   }
 
-  const prevPage = () => {
-    dispatch(decrementPage());
-  }
+  const handleChangeSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchValue(event.target.value);
+  };
 
   return (
     <Container className="mt-5">
-      <Pagination>
-        <Pagination.Prev onClick={prevPage} />
-        <Pagination.Item>{page}</Pagination.Item>
-        <Pagination.Next onClick={nextPage} />
-      </Pagination>
-      {error && (
-        <div className="text-danger mb-2">{error}</div>
+      {products.length > 0 && page && (
+        <CustomPagination
+          paginationElemCount={5}
+          totalPoductCount={isFiltered ? products.length : 1000}
+          limit={isFiltered ? products.length : limit}
+          curPage={page}
+        />
       )}
-      {!isLoading ? (
-        <Table data={products} />
+      <div>
+        <div>Фильтр по:</div>
+        {!errorFields ? (
+          <Stack direction="horizontal" gap={2} className="mt-2">
+            {fields.map((field: string, index: number) => (
+              <Button
+                key={index}
+                id={field}
+                variant={"dark"}
+                name={field}
+                value={field}
+                active={filterValue === field}
+                onClick={handleFilterClick}
+              >
+                {FilterName[field as keyof typeof FilterName]}
+              </Button>
+            ))}
+          </Stack>
+        ) : (
+          <div className="text-danger">{errorFields}</div>
+        )}
+      </div>
+      {filterValue && (
+        <Form onSubmit={handleSearchSubmit}>
+          <InputGroup className="mb-3 mt-3">
+            <Form.Control
+              placeholder="Поиск"
+              aria-describedby="search"
+              value={searchValue}
+              onChange={handleChangeSearch}
+            />
+            <Button
+              variant="outline-secondary"
+              id="search"
+              type="submit"
+            >
+              Найти
+            </Button>
+          </InputGroup>
+        </Form>
+      )}
+      {!error ? (
+        <Table products={products} pendingRequest={pendingRequest} className="mt-3" />
       ) : (
-        <div>
-          <Spinner animation="border" />
-          <div>Идет загрузка, пожалуйста, подождите...</div>
-        </div>
+        <Alert variant={'danger'} className="mt-3">
+          {error}
+        </Alert>
       )}
-    </Container>
+    </Container >
   );
 }
 
