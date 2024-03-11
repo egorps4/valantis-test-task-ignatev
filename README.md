@@ -1,47 +1,36 @@
-# Getting Started with Create React App
+# Valantis Игнатьев - Тестовое Задание
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+Команды для билда и запуска проекта - `npm run build` и `npm start` соответсвенно.
+Данное тестовое задание реализовано с использованием технологического стека **TypeScript** и **React**. Инициализация проекта выполнена с помощью утилиты `create-react-app`.
 
-In the project directory, you can run:
+## Архитектура Приложения
 
-### `npm start`
+Ключевые компоненты и модули приложения размещены в директории `src`, которая включает в себя следующую структуру:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- `index.tsx` — точка входа в приложение;
+- `App.tsx` — корневой компонент, отвечающий за рендеринг страницы;
+- `components` — директория с компонентами, включая компоненты для реализации пагинации (`Pagination.tsx`) и отображения таблицы (`Table.tsx`);
+- `interfaces` — директория, содержащая объявления интерфейсов. Включает файлы `productInterfaces.ts` для общих интерфейсов продуктов и `productsReqParams.ts` для интерфейсов параметров запросов;
+- `services` — содержит файл `ProductService.ts`, реализующий API-запросы к серверу;
+- `store` — директория, содержащая элементы состояния Redux, включая слайсы `productSlice.ts`, `productFieldSlice.ts` и конфигурацию хранилища `store.ts`;
+- `utils` — набор вспомогательных функций, где `fetchWithRetry.ts` обеспечивает повторные запросы при ошибках, `getFormatedDate.ts` форматирует даты для использования в заголовках авторизации, а `http.ts` создает экземпляры запросов с авторизационными заголовками (используя библиотеку Axios);
+- `common` — включает файл `enum.ts`, который хранит перечисления для ключей полей продуктов.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Дополнительные стандартные файлы, созданные с помощью `create-react-app`, включены в проект, но не описаны для краткости.
 
-### `npm test`
+## Используемые Библиотеки
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- TypeScript;
+- React;
+- Redux и Redux Toolkit для управления состоянием;
+- ReactDOM;
+- Axios — для выполнения HTTP-запросов;
+- Bootstrap — для стилизации;
+- js-md5 — для генерации хеш-сумм.
 
-### `npm run build`
+## Основные Особенности
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-# valantis-test-task-ignatev
+- **Управление состоянием**: Применение Redux позволяет эффективно управлять состоянием приложения, включая данные о продуктах, текущие ошибки и статус выполнения запросов.
+- **Фильтрация**: Реализована возможность фильтрации продуктов по тегам. Пользователь может активировать фильтр по тегу, что инициирует поиск. Для отмены фильтрации достаточно повторно нажать на активный фильтр. Фильтрация поддерживается только по одному тегу одновременно. Список тегов генерируется динамически на основе данных, полученных из запроса полей продуктов без параметров.
+- **Обработка ошибок**: В случае возникновения ошибки при запросе, функция `fetchWithRetry` автоматически повторяет попытку до трех раз. После трех неудачных попыток, ошибка отображается пользователю.
