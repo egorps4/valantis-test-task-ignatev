@@ -1,7 +1,7 @@
 {
   "name": "valantis-test-task",
   "version": "0.1.0",
-  "homepage": "http://egorps4.github.io/valantis-test-task-ignatev",
+  "homepage": "https://egorps4.github.io/valantis-test-task-ignatev",
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^2.2.1",
