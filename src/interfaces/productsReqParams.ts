@@ -25,11 +25,15 @@ interface IProductFieldsParams {
 
 export interface IProductFieldsReq {
     action: string;
-    params: IProductFieldsParams;
+    params?: IProductFieldsParams;
 }
 
 interface IProductFilterParams {
-    [key: string]: string;
+    price?: string;
+    brand?: string;
+    product?: string;
+    offset?: number;
+    limit?: number;
 }
 
 export interface IProductFilterReq {
